@@ -1,9 +1,9 @@
 resource "aws_s3_bucket" "backup_bucket" {
-  bucket = "my-bucket-backup-test-amazing-solutions-2023-remaster-ultra-editorscut"
-  
+  bucket = var.bucket_name 
   
   force_destroy = true
-  #set to false after extensive tests
+#  force_destroy = var.force_destroy
+# set to false after extensive tests
   
   tags = {
     Name        = "${aws_s3_bucket.backup_bucket.name}"
@@ -19,3 +19,14 @@ resource "aws_s3_bucket_acl" "bucket_acl" {
   acl    = "private"
 }
 
+resource "aws_s3_bucket_server_side_encryption_configuration" "example" {
+  bucket = aws_s3_bucket.backup_bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      bucket_key_enabled = true
+      sse_algorithm     = "sse_algorithm"
+      kms_master_key_id = "AES256"
+    }
+  }
+}
